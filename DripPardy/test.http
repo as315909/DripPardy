@@ -1,0 +1,7 @@
+POST http://localhost:3000/join-game
+Content-Type: application/json
+
+{
+  "gamePin": "596544",
+  "name": "AnotherPlayer"
+}

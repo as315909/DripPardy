@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Page</title>
+  <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+</head>
+<body>
+  <h1>Welcome to the Game!</h1>
+  <h2>Players:</h2>
+  <ul id="playerList"></ul>
+  <button id="startGameButton">Start Game</button>
+
+  <script>
+    const socket = io("http://localhost:3000");
+
+    // Replace with actual gamePin passed to this page
+    const gamePin = "596544"; 
+
+    // Join the game room
+    socket.emit("join-room", gamePin);
+
+    // Fetch and display the player list
+    fetch("http://localhost:3000/join-game", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ gamePin: gamePin, name: "HostPlayer" }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const playerList = document.getElementById("playerList");
+        playerList.innerHTML = "";
+        data.players.forEach((player) => {
+          const li = document.createElement("li");
+          li.textContent = player;
+          playerList.appendChild(li);
+        });
+      });
+
+    // Listen for new players joining
+    socket.on("player-joined", (data) => {
+      const playerList = document.getElementById("playerList");
+      const li = document.createElement("li");
+      li.textContent = data.name;
+      playerList.appendChild(li);
+    });
+
+    // Handle start game button click
+    document.getElementById("startGameButton").addEventListener("click", () => {
+      socket.emit("start-game", gamePin);
+      alert("Game Started!");
+    });
+  </script>
+</body>
+</html>

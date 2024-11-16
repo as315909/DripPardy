@@ -1,0 +1,10 @@
+h1,input,button{
+    text-align: center;
+}
+button, input{
+    border-radius: 10px;
+
+}
+.NameInput{
+    margin-left: 40.62%;
+}
